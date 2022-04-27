@@ -7,7 +7,18 @@ const imageStorage = multer.diskStorage({
     filename: (req ,file, cb) => {
         cb(null, uuid() + path.extname(file.originalname))
     }
-})
+});
+
+const imageUpload = multer({
+    storage: imageStorage,
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(png|jpg)$/)) { 
+           // upload only png and jpg format
+           return cb(new Error('Please upload a Image'))
+         }
+        cb(null, true)
+    }
+});
 
 const videoStorage = multer.diskStorage({
     destination: 'uploads/videos',
@@ -27,4 +38,4 @@ const videoUpload = multer({
      }
 });
 
-export { videoUpload };
+export { videoUpload, imageUpload };

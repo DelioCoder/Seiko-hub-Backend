@@ -5,6 +5,7 @@ import { User } from './interfaces/user.interface';
 const userSchema = new Schema({
 
     name: String,
+    lastname: String,
     username: String,
     photo: String,
     email: String,

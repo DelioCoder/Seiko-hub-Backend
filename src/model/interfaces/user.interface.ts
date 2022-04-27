@@ -2,8 +2,10 @@ import { Document, ObjectId } from 'mongoose';
 
 export interface User extends Document {
     
+    _doc: any;
     id: ObjectId;
     name: string;
+    lastname: string;
     username: string;
     photo: string;
     email: string;
