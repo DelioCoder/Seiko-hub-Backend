@@ -9,6 +9,11 @@ export interface User extends Document {
     username: string;
     photo: string;
     email: string;
+    followers: [
+        {
+            followerId: ObjectId;
+        }
+    ];
     password: string;
     isAdmin: boolean;
     encrypPassword(password: string): Promise<string>;

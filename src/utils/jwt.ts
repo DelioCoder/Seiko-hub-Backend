@@ -5,7 +5,7 @@ const generateJWT = ( user: User ): string => {
     return jwt.sign({
         uid: user.id,
         name: user.name
-    }, process.env.SECRET_KEY || '',{ expiresIn: '1h' });
+    }, process.env.SECRET_KEY_SEED || '',{ expiresIn: '1h' });
 }
 
 export default generateJWT;

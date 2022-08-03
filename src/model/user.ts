@@ -10,7 +10,12 @@ const userSchema = new Schema({
     photo: String,
     email: String,
     password: String,
-    isAdmin: { type: Boolean, default: false }
+    isAdmin: { type: Boolean, default: false },
+    followers: [
+        {
+            followerId: { type: Schema.Types.ObjectId }
+        }
+    ]
 
 },{
     timestamps: true

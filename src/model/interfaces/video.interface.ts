@@ -1,4 +1,5 @@
 import { Document, ObjectId } from 'mongoose';
+import { User } from './user.interface';
 
 export interface Video extends Document {
 
@@ -6,10 +7,11 @@ export interface Video extends Document {
     title: string;
     videoPath: string;
     description: string;
-    categories: string[];
+    category: string;
+    views: number;
     comments: Comment[];
     likes: Like[];
-    user: ObjectId;
+    user: ObjectId | User;
 
 }
 

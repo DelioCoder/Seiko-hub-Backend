@@ -1,82 +1,108 @@
 import { RequestHandler } from 'express';
-import User from '../model/user';
-import { Jwt, Numbers } from '../utils';
+import UserModel from '../model/user';
+import { User } from '../model/interfaces/user.interface';
 
-// (Iniciar sesión)
-export const signin: RequestHandler = async ( req, res ) => {
+export const getUserInfo: RequestHandler = async(req, res) => {
 
-    const { email, password } = req.body;
+    const {id} = req.params;
 
-    const user = await User.findOne({'email': email});
+    const userDB = await UserModel.findById(id) as User;
 
-    if (!user) {
-
-        res.status(401).json({ msg: 'User not found' });
-
-    } else {
-
-        const match = await user.validatePassword(password);
-
-        if(!match) {
-            res.status(401).json({ msg: 'Wrong password!' })
-        }
-
-        const token = Jwt(user);
-
-        res.status(202).json({
-            ...user._doc,
-            token
+    if(userDB) {
+        return res.json({
+            name: userDB.name,
+            username: userDB.username,
+            userPhoto: userDB.photo,
         });
-
+    } else {
+        return res.json({
+            ok: false,
+            message: `channel not found`
+        })
     }
-    
 
 }
 
-// (Registrarse)
+export const updateProfile: RequestHandler = async(req, res) => {
 
-export const signup: RequestHandler = async ( req, res ) => {
+    const { id } = req.params;
+    const { name, lastname, username } = req.body;
 
-    const { name, lastname, email, password } = req.body;
+    const photo = req.file?.path;
 
-    const emailExist = await User.findOne({'email': email});
-
-    if ( emailExist ) {
-
-        res.status(400).json({
-            msg: 'Email already taken'
-        });
-
-    }
-
-    const numbers = Numbers();
-
-    const username = `${ name + '.' + lastname + '.' + numbers }`;
-
-    try {
-        
-        const newUser = new User({
+    if(id) {
+        const userUpdated = await UserModel.findByIdAndUpdate(id, {
             name,
             lastname,
             username,
-            photo: req.file?.path,
-            email,
-            password
+            photo
+        }, { new: true });
+
+        res.status(202).json(userUpdated);
+
+    } else {
+        res.status(401).json({
+            ok: false,
+            message: `Not allowed`
+        })
+    }
+
+}
+
+export const followUser: RequestHandler = async( req, res ) => {
+
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    const userDB = await UserModel.findById(id) as User;
+
+    if( !userDB ){
+        return res.json({
+            ok: false,
+            message: 'User not exist'
+        });
+    } 
+
+    userDB.followers.unshift({
+        followerId: userId
+    });
+
+    await userDB.save();
+
+    return res.json(userDB.followers[0]);
+
+}
+
+export const unfollowUser: RequestHandler = async(req, res) => {
+
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    const userDB = await UserModel.findById(id) as User;
+
+    if( !userDB ){
+        return res.json({
+            ok: false,
+            message: 'User not exist'
+        });
+    } 
+
+    const followIndex = userDB.followers.findIndex((c) => c.followerId === userId);
+
+    if(userDB.followers[followIndex].followerId === userId) {
+
+        userDB.followers.splice(followIndex, 1);
+        await userDB.save();
+        return res.json({
+            ok: true,
+            message: 'unfollowed'
         });
 
-        newUser.password = await newUser.encrypPassword(newUser.password);
-        
-        const savedUser = await newUser.save();
-
-        const token = Jwt(savedUser);
-
-        res.json({
-            ...savedUser._doc,
-            token
+    } else {
+        return res.status(401).json({
+            ok: true,
+            message: 'not allowed'
         });
-
-    } catch ( ex ) {
-        res.status(401).json(ex);
     }
 
 }

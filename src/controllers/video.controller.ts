@@ -1,11 +1,12 @@
 import { RequestHandler } from "express";
-import Video from '../model/video.model';
+import VideoModel from '../model/video.model';
+import { Video } from '../model/interfaces/video.interface';
 import path from 'path';
 import fs from 'fs-extra'
 
 export const getVideos: RequestHandler = async ( req, res ) => {
 
-    const videos = await Video.find();
+    const videos = await VideoModel.find();
 
     res.status(202).json(videos);
 
@@ -13,15 +14,20 @@ export const getVideos: RequestHandler = async ( req, res ) => {
 
 export const createVideo: RequestHandler = async ( req, res ) => {
 
-    const { title, description, categories } = req.body;
+    const { title, description, category } = req.body;
+
+    const { uid } = req;
+
+    console.log(`User id: ${uid}`);
 
     console.log(req.file?.path);
-
-    const newVideo = new Video({
+    
+    const newVideo = new VideoModel({
         title,
         description,
-        categories,
-        videoPath: req.file?.path
+        category: category,
+        videoPath: req.file?.path,
+        user: uid
     });
 
     await newVideo.save();
@@ -32,17 +38,19 @@ export const createVideo: RequestHandler = async ( req, res ) => {
 
 }
 
-export const getVideo: RequestHandler = async ( req, res ) => {
+export const getVideoByUser: RequestHandler = async ( req, res ) => {
 
-    const video = await Video.findById(req.params.id);
-
-    res.status(202).json(video);
+    const video = await VideoModel.find({'user': req.params.id}) as Video[];
+                                
+    res.status(202).json({
+        video
+    });
 
 }
 
 export const deleteVideo: RequestHandler = async ( req, res ) => {
 
-    const video = await Video.findByIdAndRemove(req.params.id);
+    const video = await VideoModel.findByIdAndRemove(req.params.id);
 
     if(video) {
         await fs.unlink(path.resolve(video.videoPath));
@@ -60,7 +68,7 @@ export const updateVideo: RequestHandler = async( req, res ) => {
     const { id } = req.params;
     const { title, description } = req.body;
 
-    const updatedVideo = await Video.findByIdAndUpdate(id, {
+    const updatedVideo = await VideoModel.findByIdAndUpdate(id, {
         title,
         description
     }, { new: true });
@@ -69,5 +77,20 @@ export const updateVideo: RequestHandler = async( req, res ) => {
         message: 'Succesfully Updated',
         updatedVideo
     })
+
+}
+
+export const updateViews: RequestHandler = async( req, res ) => {
+
+    const { id } = req.params;
+
+    if(id) {
+        const updatedVideo = await VideoModel.findByIdAndUpdate(id, { $inc: {'views': 1} }, { new: true });
+
+        res.status(202).json({
+            message: 'Succesfully Updated',
+            updatedVideo
+        });
+    }
 
 }
