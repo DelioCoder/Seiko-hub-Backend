@@ -13,6 +13,7 @@ const userSchema = new Schema({
     isAdmin: { type: Boolean, default: false },
     followers: [
         {
+            _id: false,
             followerId: { type: Schema.Types.ObjectId }
         }
     ]

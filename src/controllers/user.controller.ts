@@ -2,23 +2,24 @@ import { RequestHandler } from 'express';
 import UserModel from '../model/user';
 import { User } from '../model/interfaces/user.interface';
 
-export const getUserInfo: RequestHandler = async(req, res) => {
+export const getUserContentInfo: RequestHandler = async(req, res) => {
 
     const {id} = req.params;
+    const { kindInfo, userId } = req.body;
 
     const userDB = await UserModel.findById(id) as User;
 
     if(userDB) {
-        return res.json({
-            name: userDB.name,
-            username: userDB.username,
-            userPhoto: userDB.photo,
-        });
-    } else {
-        return res.json({
-            ok: false,
-            message: `channel not found`
-        })
+        
+        if( kindInfo === 'profile' ) {
+            return res.status(201).json(userDB);
+        } else {
+            return res.json({
+                name: userDB.name,
+                username: userDB.username,
+                userPhoto: userDB.photo,
+            });
+        }
     }
 
 }
@@ -51,8 +52,7 @@ export const updateProfile: RequestHandler = async(req, res) => {
 
 export const followUser: RequestHandler = async( req, res ) => {
 
-    const { id } = req.params;
-    const { userId } = req.body;
+    const { id, userId } = req.body;
 
     const userDB = await UserModel.findById(id) as User;
 
@@ -75,8 +75,7 @@ export const followUser: RequestHandler = async( req, res ) => {
 
 export const unfollowUser: RequestHandler = async(req, res) => {
 
-    const { id } = req.params;
-    const { userId } = req.body;
+    const { id, userId } = req.body;
 
     const userDB = await UserModel.findById(id) as User;
 
@@ -87,13 +86,13 @@ export const unfollowUser: RequestHandler = async(req, res) => {
         });
     } 
 
-    const followIndex = userDB.followers.findIndex((c) => c.followerId === userId);
+    const followIndex: number = userDB.followers!.findIndex((c) => c.followerId.toString() === userId);
 
-    if(userDB.followers[followIndex].followerId === userId) {
+    if(userDB.followers![followIndex].followerId.toString() === userId) {
 
         userDB.followers.splice(followIndex, 1);
         await userDB.save();
-        return res.json({
+        return res.status(201).json({
             ok: true,
             message: 'unfollowed'
         });

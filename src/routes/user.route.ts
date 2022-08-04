@@ -3,17 +3,18 @@ import { validateJWT } from '../middlewares/ValidateToken';
 import { 
     followUser,
     unfollowUser,
-    getUserInfo,
+    getUserContentInfo,
     updateProfile }
 from '../controllers/user.controller';
 import { imageUpload } from '../libs/multer';
 
 const router = Router();
 
-router.route('/info')
-    .get( validateJWT, getUserInfo );
+router.route('/content')
+    .get( validateJWT, getUserContentInfo );
 
 router.route('/info/:id')
+    .get( validateJWT, getUserContentInfo )
     .put( validateJWT, imageUpload.single('image'), updateProfile );
 
 router.route('/follow')
