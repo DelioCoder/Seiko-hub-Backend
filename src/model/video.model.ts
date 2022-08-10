@@ -6,12 +6,14 @@ const videoSchema = new Schema({
     title: { type: String, required: true },
     videoPath: { type: String, required: true },
     description: { type: String, required: true },
-    category: { type: String, required: true },
+    category: [
+        { type: String, required: true }
+    ],
     views: { type: Number, default: 0 },
     comments: [
         {
             body: String,
-            user: { type: Schema.Types.ObjectId },
+            user: { type: Schema.Types.ObjectId, ref: 'User' },
             createdAt: String,
             
         }
@@ -22,7 +24,7 @@ const videoSchema = new Schema({
             createdAt: String
         }
     ],
-    user: { type: Schema.Types.ObjectId }
+    user: { type: Schema.Types.ObjectId, ref: 'User' }
 
 },{
     timestamps: true

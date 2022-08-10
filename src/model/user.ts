@@ -16,6 +16,11 @@ const userSchema = new Schema({
             _id: false,
             followerId: { type: Schema.Types.ObjectId }
         }
+    ],
+    videoCategories: [
+        {
+            type: String
+        }
     ]
 
 },{

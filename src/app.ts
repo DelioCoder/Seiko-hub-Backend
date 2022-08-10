@@ -19,7 +19,7 @@ app.use('/uploads', express.static(path.resolve('uploads')));
 // ROUTES
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
-app.use('/api/videoUpload', videoRoute);
+app.use('/api/video', videoRoute);
 
 app.set('port', process.env.PORT);
 

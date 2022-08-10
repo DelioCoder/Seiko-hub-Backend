@@ -4,18 +4,22 @@ import {
     followUser,
     unfollowUser,
     getUserContentInfo,
-    updateProfile }
+    updateProfile, 
+    updatePreferences}
 from '../controllers/user.controller';
 import { imageUpload } from '../libs/multer';
 
 const router = Router();
 
-router.route('/content')
-    .get( validateJWT, getUserContentInfo );
+router.route('/content/:id/:kindInfo')
+    .get( getUserContentInfo );
 
 router.route('/info/:id')
     .get( validateJWT, getUserContentInfo )
     .put( validateJWT, imageUpload.single('image'), updateProfile );
+
+router.route('/info/preferences/:id')
+    .put( updatePreferences )
 
 router.route('/follow')
     .put( validateJWT, followUser );

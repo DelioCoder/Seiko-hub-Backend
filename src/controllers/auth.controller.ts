@@ -11,14 +11,14 @@ export const signin: RequestHandler = async ( req, res ) => {
 
     if (!user) {
 
-        res.status(401).json({ msg: 'User not found' });
+        res.status(401).json({ message: 'Wrong credentials' });
 
     } else {
 
         const match = await user.validatePassword(password);
 
         if(!match) {
-            res.status(401).json({ msg: 'Wrong password!' })
+            res.status(401).json({ message: 'Wrong credentials!' })
         }
 
         const token = Jwt(user);
@@ -47,7 +47,7 @@ export const signup: RequestHandler = async ( req, res ) => {
     if ( emailExist ) {
 
         res.status(400).json({
-            msg: 'Email already taken'
+            message: 'Email already taken'
         });
 
     }
@@ -77,6 +77,7 @@ export const signup: RequestHandler = async ( req, res ) => {
             name: newUser.name,
             lastname: newUser.lastname,
             email: newUser.email,
+            username: newUser.username,
             token
         });
 

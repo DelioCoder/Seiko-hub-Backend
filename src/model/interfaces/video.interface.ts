@@ -2,7 +2,7 @@ import { Document, ObjectId } from 'mongoose';
 import { User } from './user.interface';
 
 export interface Video extends Document {
-
+    _doc : any;
     id: ObjectId;
     title: string;
     videoPath: string;
@@ -16,8 +16,9 @@ export interface Video extends Document {
 }
 
 interface Comment {
-    body: string;
-    user: string | String | ObjectId;
+    id      : string | String | ObjectId;
+    body    : string;
+    user    : string | String | ObjectId;
     createdAt: string;
 }
 
