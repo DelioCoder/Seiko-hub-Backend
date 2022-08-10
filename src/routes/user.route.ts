@@ -8,8 +8,12 @@ import {
     updatePreferences}
 from '../controllers/user.controller';
 import { imageUpload } from '../libs/multer';
+import { deleteUserFromDB } from '../controllers/user.controller';
 
 const router = Router();
+
+router.route('/:id')
+    .delete( deleteUserFromDB );
 
 router.route('/content/:id/:kindInfo')
     .get( getUserContentInfo );
@@ -26,6 +30,5 @@ router.route('/follow')
 
 router.route('/unfollow')
     .put( validateJWT, unfollowUser );
-
 
 export default router;

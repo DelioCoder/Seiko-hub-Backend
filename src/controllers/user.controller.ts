@@ -1,6 +1,9 @@
 import { RequestHandler } from 'express';
+import path from 'path';
+import fs from 'fs-extra'
 import UserModel from '../model/user';
 import { User } from '../model/interfaces/user.interface';
+import videoModel from '../model/video.model';
 
 export const getUserContentInfo: RequestHandler = async(req, res) => {
 
@@ -34,7 +37,15 @@ export const getUserContentInfo: RequestHandler = async(req, res) => {
 export const updateProfile: RequestHandler = async(req, res) => {
 
     const { id } = req.params;
-    const { name, lastname, username } = req.body;
+    const { name, lastname, username, email, password } = req.body;
+
+    const user = await UserModel.findOne({'email': email});
+
+    if (!user) return res.status(401).json({ message: 'Wrong email' });
+
+    const match = await user.validatePassword(password);
+
+    if(!match) return res.status(401).json({ message: 'Wrong password!' });
 
     const photo = req.file?.path;
 
@@ -137,6 +148,32 @@ export const updatePreferences:RequestHandler = async(req, res) => {
             message: ex.message
         });
 
+    }
+
+}
+
+export const deleteUserFromDB:RequestHandler = async(req, res) => {
+
+    try {
+        
+        const { id } = req.params;
+
+        if(!id) return res.send(`User not found`);
+
+        const video = await videoModel.findOneAndRemove({'user': id});
+
+        if(!video) return res.send(`Video not found`);
+
+        await fs.unlink(path.resolve(video.videoPath));
+
+        await UserModel.findByIdAndRemove(id);
+
+        return res.send(`User ${id} has been deleted`);
+
+    } catch (ex: any) {
+        return res.status(401).json({
+            message: ex.message
+        });
     }
 
 }

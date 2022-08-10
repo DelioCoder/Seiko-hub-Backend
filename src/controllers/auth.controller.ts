@@ -27,7 +27,7 @@ export const signin: RequestHandler = async ( req, res ) => {
             id: user.id,
             username: user.username,
             email: user.email,
-            photoUser: user.photo,
+            userPhoto: user.photo,
             token
         });
 
