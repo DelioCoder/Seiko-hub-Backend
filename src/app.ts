@@ -8,8 +8,6 @@ import videoRoute from './routes/video.route';
 import authRoute from './routes/auth.route';
 import userRoute from './routes/user.route';
 
-const PORT = process.env.PORT || 4000;
-
 const app = express();
 
 app.use(morgan('dev'));
@@ -22,7 +20,5 @@ app.use('/uploads', express.static(path.resolve('uploads')));
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
 app.use('/api/video', videoRoute);
-
-app.set('port', PORT);
 
 export default app;
