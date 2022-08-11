@@ -23,11 +23,11 @@ export const signin: RequestHandler = async ( req, res ) => {
 
         const token = Jwt(user);
 
-        res.status(202).json({
+        return res.status(202).json({
             id: user.id,
             username: user.username,
             email: user.email,
-            userPhoto: user.photo,
+            photo: user.photo,
             token
         });
 
@@ -72,7 +72,7 @@ export const signup: RequestHandler = async ( req, res ) => {
 
         const token = Jwt(savedUser);
 
-        res.json({
+        return res.json({
             id: newUser.id,
             name: newUser.name,
             lastname: newUser.lastname,
@@ -82,7 +82,7 @@ export const signup: RequestHandler = async ( req, res ) => {
         });
 
     } catch ( ex ) {
-        res.status(401).json(ex);
+        return res.status(401).json(ex);
     }
 
 }

@@ -6,7 +6,7 @@ import fs from 'fs-extra'
 
 export const getVideos: RequestHandler = async ( req, res ) => {
 
-    const videos = await VideoModel.find();
+    const videos = await VideoModel.find().populate('user') as Video[];
 
     res.status(202).json(videos);
 
@@ -46,7 +46,7 @@ export const createVideo: RequestHandler = async ( req, res ) => {
 
 export const getVideoByUser: RequestHandler = async ( req, res ) => {
 
-    const videos = await VideoModel.find({'user': req.params.id}) as Video[];
+    const videos = await VideoModel.find({'user': req.params.id}).populate('user').exec() as Video[];
                                 
     res.status(202).json(videos);
 
@@ -58,7 +58,7 @@ export const getVideoById: RequestHandler = async (req, res) => {
 
     try {
 
-        const video = await VideoModel.findById(id).populate('user').exec() as Video;
+        const video = await VideoModel.findById(id).populate('user').populate('comments.user').exec() as Video;
 
         res.status(202).json({
             ...video._doc,

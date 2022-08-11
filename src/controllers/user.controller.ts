@@ -22,7 +22,7 @@ export const getUserContentInfo: RequestHandler = async(req, res) => {
                     id: userDB.id,
                     name: userDB.name,
                     username: userDB.username,
-                    userPhoto: userDB.photo,
+                    photo: userDB.photo,
                     followers: userDB.followers
                 });
 
