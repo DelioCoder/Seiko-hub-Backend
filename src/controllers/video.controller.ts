@@ -14,7 +14,7 @@ export const getVideos: RequestHandler = async ( req, res ) => {
 
 export const createVideo: RequestHandler = async ( req, res ) => {
 
-    const { title, description, category } = req.body;
+    const { title, description, category, videoPath } = req.body;
 
     const { uid } = req;
 
@@ -24,7 +24,7 @@ export const createVideo: RequestHandler = async ( req, res ) => {
             title,
             description,
             category: category,
-            videoPath: req.file?.path,
+            videoPath: videoPath,
             user: uid
         });
     

@@ -37,17 +37,17 @@ export const getUserContentInfo: RequestHandler = async(req, res) => {
 export const updateProfile: RequestHandler = async(req, res) => {
 
     const { id } = req.params;
-    const { name, lastname, username, email, password } = req.body;
+    const { name, lastname, username, email, confirmPassword, imagePath } = req.body;
 
     const user = await UserModel.findOne({'email': email});
 
     if (!user) return res.status(401).json({ message: 'Wrong email' });
 
-    const match = await user.validatePassword(password);
+    const match = await user.validatePassword(confirmPassword);
 
     if(!match) return res.status(401).json({ message: 'Wrong password!' });
 
-    const photo = req.file?.path;
+    const photo = imagePath;
 
     if(id) {
         const userUpdated = await UserModel.findByIdAndUpdate(id, {

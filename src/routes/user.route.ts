@@ -7,7 +7,6 @@ import {
     updateProfile, 
     updatePreferences}
 from '../controllers/user.controller';
-import { imageUpload } from '../libs/multer';
 import { deleteUserFromDB } from '../controllers/user.controller';
 
 const router = Router();
@@ -20,7 +19,7 @@ router.route('/content/:id/:kindInfo')
 
 router.route('/info/:id')
     .get( validateJWT, getUserContentInfo )
-    .put( validateJWT, imageUpload.single('image'), updateProfile );
+    .put( validateJWT, updateProfile );
 
 router.route('/info/preferences/:id')
     .put( updatePreferences )

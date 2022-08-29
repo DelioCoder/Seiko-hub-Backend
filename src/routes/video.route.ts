@@ -7,7 +7,6 @@ import {
     getVideoByUser,
     getVideoById
 } from '../controllers/video.controller';
-import { videoUpload } from '../libs/multer';
 import { validateJWT } from '../middlewares/ValidateToken';
 import { commentVideo, deleteComment } from '../controllers/video.controller';
 
@@ -15,7 +14,7 @@ const router = Router();
 
 router.route('/')
     .get(getVideos)
-    .post( validateJWT, videoUpload.single('video'), createVideo );
+    .post( validateJWT, createVideo );
 
 router.route('/:id')
     .get(validateJWT, getVideoByUser)
