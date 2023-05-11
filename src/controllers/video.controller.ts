@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import VideoModel from '../model/video.model';
 import { Video } from '../model/interfaces/video.interface';
 import path from 'path';
-import fs from 'fs-extra'
+import fs from 'fs-extra';
 
 export const getVideos: RequestHandler = async ( req, res ) => {
 
